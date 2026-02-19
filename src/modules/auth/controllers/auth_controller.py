@@ -8,7 +8,6 @@ async def login_user(user: AuthSchema):
         user = await login_user_service(user.email, user.password)
         user_dict = jsonable_encoder(user)
         user_dict.pop("password")
-        print(user_dict)
         return JSONResponse(content={
             "message": "LOGIN SUCCESSFUL",
             "user": user_dict

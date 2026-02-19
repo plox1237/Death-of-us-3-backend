@@ -3,6 +3,7 @@ from sqlmodel import Session
 from src.config.database import engine
 from src.modules.users.repositories.users_repository import UsersRepository
 from src.modules.users.model.users_model import User
+from src.shared.utils.email import welcome_email
 
 user_repository = UsersRepository(Session(engine))
 
@@ -42,6 +43,10 @@ class UsersService:
         if possible_user:
             raise HTTPException(status_code=409, detail="PHONE ALREADY REGISTERED")
         await self.repository.create_user(user)
+        try:
+            welcome_email(user.email, user.name, user.last_name)
+        except Exception as e:
+            print("ERROR AL ENVIAR CORREO DE BIENVENIDA: ", e)
         return
     
     async def update_user(self, user_id: int, user: User):
