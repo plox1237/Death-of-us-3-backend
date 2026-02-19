@@ -5,9 +5,13 @@ from src.modules.auth.services.auth_service import login_user_service
 
 async def login_user(user: AuthSchema):
     try:
-        await login_user_service(user.email, user.password)
+        user = await login_user_service(user.email, user.password)
+        user_dict = jsonable_encoder(user)
+        user_dict.pop("password")
+        print(user_dict)
         return JSONResponse(content={
-            "message": "LOGIN SUCCESSFUL"
+            "message": "LOGIN SUCCESSFUL",
+            "user": user_dict
         }, status_code=200)
     except Exception as e:
         print("ERROR DURING LOGIN: \n", e)
