@@ -26,10 +26,10 @@ class SectionsRepository:
         self.session.add(section)
         self.session.commit()
         self.session.refresh(section)
-        return
-
-    async def update_section(self, section: Section):
-        statement = select(Section).where(Section.section_id == section.section_id)
+        return section
+    
+    async def update_section(self, section: Section, section_id: int):
+        statement = select(Section).where(Section.section_id == section_id)
         section_db = self.session.exec(statement).first()
         if section.name:
             section_db.name = section.name

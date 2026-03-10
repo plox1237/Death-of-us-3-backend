@@ -39,7 +39,10 @@ class SectionsService:
         section_db = await self.repository.get_section_by_id(section_id)
         if not section_db:
             raise HTTPException(status_code=404, detail="SECTION NOT FOUND")
-        await self.repository.update_section(section)
+        possible_section = await self.repository.get_section_by_name(section.name)
+        if possible_section and possible_section.section_id != section_id:
+            raise HTTPException(status_code=409, detail="SECTION NAME ALREADY EXISTS")   
+        await self.repository.update_section(section, section_id)
         return
     
     async def delete_section(self, section_id: int):
