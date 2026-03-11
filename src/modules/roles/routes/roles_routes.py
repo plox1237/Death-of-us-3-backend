@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from src.modules.roles.model.roles_model import Role
 from src.modules.roles.controllers.roles_controller import RolesController
 
 roles_router = APIRouter()

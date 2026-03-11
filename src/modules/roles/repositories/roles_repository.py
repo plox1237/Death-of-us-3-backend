@@ -1,4 +1,3 @@
-from numpy import delete
 from sqlmodel import Session, select
 from src.modules.roles.model.roles_model import Role
 
@@ -28,10 +27,11 @@ class RolesRepository:
         return
     
     async def update_role(self, role: Role, role_id: int):
-        role_db = await self.get_role_by_id(role_id)
-        role_db.name = role.name
+        statement = select(Role).where(Role.role_id == role_id)
+        role_db = self.session.exec(statement).first()
+        if role.name:
+            role_db.name = role.name
         self.session.commit()
-        self.session.refresh(role_db)
     
     async def delete_role(self, role: Role):
         self.session.delete(role)

@@ -1,6 +1,5 @@
 from fastapi import HTTPException
 from sqlmodel import Session
-from modules.roles.repositories import roles_repository
 from src.config.database import engine
 from src.modules.roles.model.roles_model import Role
 from src.modules.roles.repositories.roles_repository import RolesRepository
@@ -40,8 +39,10 @@ class RolesService:
         role_db = await self.repository.get_role_by_id(role_id)
         if not role_db:
             raise HTTPException(status_code=404, detail="ROLE NOT FOUND")
-        role_db.name = role.name
-        self.repository.update_role(role_db)
+        possible_role = await self.repository.get_role_by_name(role.name)
+        if possible_role and possible_role.role_id != role_id:
+            raise HTTPException(status_code=409, detail="ROLE NAME ALREADY EXISTS")
+        await self.repository.update_role(role, role_id)
         return role_db
     
     async def delete_role(self, role_id: int):

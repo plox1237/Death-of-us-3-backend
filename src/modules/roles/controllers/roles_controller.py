@@ -12,7 +12,7 @@ class RolesController:
             roles = await self.service.get_all_roles()
             data = jsonable_encoder(roles)
             return JSONResponse(status_code=200, content={
-                "message": "ROLES FOUND",-
+                "message": "ROLES FOUND",
                 "data": data
             })
         except Exception as e:
@@ -46,7 +46,7 @@ class RolesController:
     async def create_role(self, role: Role):
         try:
             await self.service.create_role(role)
-            return JSONResponse(status_code=200, content={
+            return JSONResponse(status_code=201, content={
                 "message": "ROLE CREATED",
             })
         except Exception as e:

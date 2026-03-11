@@ -31,7 +31,7 @@ class UsersRepository:
         self.session.refresh(user)
         return
     
-    async def update_user(self, user: User):
+    async def update_user(self,user_id: int, user: User):
         statement = select(User).where(User.user_id == user_id)
         user_db = self.session.exec(statement).first()
         if user.name:
