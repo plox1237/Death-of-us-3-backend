@@ -23,22 +23,30 @@ class SectionsRepository:
         return result.first()
     
     async def create_section(self, section: Section):
-        self.session.add(section)
-        self.session.commit()
-        self.session.refresh(section)
-        return section
+        try:
+            self.session.add(section)
+            self.session.commit()
+            self.session.refresh(section)
+            return section
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def update_section(self, section: Section, section_id: int):
-        statement = select(Section).where(Section.section_id == section_id)
-        section_db = self.session.exec(statement).first()
-        if section.name:
-            section_db.name = section.name
-        if section.description:
-            section_db.description = section.description
-        if section.is_active:
-            section_db.is_active = section.is_active
-        self.session.commit()
-    
+        try:
+            statement = select(Section).where(Section.section_id == section_id)
+            section_db = self.session.exec(statement).first()
+            if section.name:
+                section_db.name = section.name
+            if section.description:
+                section_db.description = section.description
+            if section.is_active:
+                section_db.is_active = section.is_active
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
     async def delete_section(self, section: Section):
         self.session.delete(section)
         self.session.commit()

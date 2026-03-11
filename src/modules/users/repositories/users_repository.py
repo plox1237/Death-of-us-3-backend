@@ -26,26 +26,34 @@ class UsersRepository:
         return result.first()
     
     async def create_user(self, user: User):
-        self.session.add(user)
-        self.session.commit()
-        self.session.refresh(user)
-        return
+        try:
+            self.session.add(user)
+            self.session.commit()
+            self.session.refresh(user)
+            return
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def update_user(self,user_id: int, user: User):
-        statement = select(User).where(User.user_id == user_id)
-        user_db = self.session.exec(statement).first()
-        if user.name:
-            user_db.name = user.name
-        if user.last_name:
-            user_db.last_name = user.last_name
-        if user.email:
-            user_db.email = user.email
-        if user.password:
-            user_db.password = user.password
-        if user.phone:
-            user_db.phone = user.phone
-        self.session.commit()
-    
+        try:
+            statement = select(User).where(User.user_id == user_id)
+            user_db = self.session.exec(statement).first()
+            if user.name:
+                user_db.name = user.name
+            if user.last_name:
+                user_db.last_name = user.last_name
+            if user.email:
+                user_db.email = user.email
+            if user.password:
+                user_db.password = user.password
+            if user.phone:
+                user_db.phone = user.phone
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+
     async def delete_user(self, user: User):
         self.session.delete(user)
         self.session.commit()

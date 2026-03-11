@@ -21,17 +21,25 @@ class RolesRepository:
         return role
     
     async def create_role(self, role: Role):
-        self.session.add(role)
-        self.session.commit()
-        self.session.refresh(role)
-        return
+        try:
+            self.session.add(role)
+            self.session.commit()
+            self.session.refresh(role)
+            return
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def update_role(self, role: Role, role_id: int):
-        statement = select(Role).where(Role.role_id == role_id)
-        role_db = self.session.exec(statement).first()
-        if role.name:
-            role_db.name = role.name
-        self.session.commit()
+        try:
+            statement = select(Role).where(Role.role_id == role_id)
+            role_db = self.session.exec(statement).first()
+            if role.name:
+                role_db.name = role.name
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def delete_role(self, role: Role):
         self.session.delete(role)
