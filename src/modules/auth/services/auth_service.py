@@ -15,8 +15,9 @@ async def login_user_service(email: str, password: str):
     token = await generate_token(user)
     data = {
         "user_id": user.user_id,
+        "user_role": user.role_id,
         "user_email": user.email,
         "user_phone": user.phone,
-        "token": token
+        "access_token": token
     }
     return data
