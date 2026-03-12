@@ -4,6 +4,7 @@ from src.config.database import engine
 from src.modules.users.repositories.users_repository import UsersRepository
 from src.modules.users.model.users_model import User
 from src.shared.utils.email import welcome_email
+from src.shared.utils.password_utils import hash_password
 
 user_repository = UsersRepository(Session(engine))
 
@@ -42,6 +43,7 @@ class UsersService:
         possible_user = await self.repository.get_user_by_phone(user.phone)
         if possible_user:
             raise HTTPException(status_code=409, detail="PHONE ALREADY REGISTERED")
+        user.password = await hash_password(user.password)
         await self.repository.create_user(user)
         try:
             welcome_email(user.email, user.name, user.last_name)

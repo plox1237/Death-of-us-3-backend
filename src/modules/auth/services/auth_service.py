@@ -1,8 +1,22 @@
+import bcrypt
 from fastapi import HTTPException
 from src.modules.users.services.users_service import user_repository
+from src.shared.utils.jwt_utils import generate_token
 
 async def login_user_service(email: str, password: str):
     user = await user_repository.get_user_by_email(email)
-    if not user or user.password != password:
+    if not user:
         raise HTTPException(status_code=401, detail="INVALID CREDENTIALS")
-    return user 
+    result = bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8'))
+    print("THE RESULT: ", result)
+    if not result:
+        print("INVALID CREDENTIALS")
+        raise HTTPException(status_code=401, detail="INVALID CREDENTIALS")
+    token = await generate_token(user)
+    data = {
+        "user_id": user.user_id,
+        "user_email": user.email,
+        "user_phone": user.phone,
+        "token": token
+    }
+    return data

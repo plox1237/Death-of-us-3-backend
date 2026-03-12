@@ -1,4 +1,7 @@
-from sqlmodel import Field, SQLModel
+from typing import TYPE_CHECKING, List
+from sqlmodel import Field, SQLModel, Relationship
+if TYPE_CHECKING:
+    from src.modules.roles.model.roles_model import Role
 
 class User(SQLModel, table=True):
     user_id: int | None = Field(default=None, primary_key=True)
@@ -7,5 +10,7 @@ class User(SQLModel, table=True):
     email: str = Field(index=True, unique=True, nullable=False)
     password: str = Field(nullable=False)
     phone: str = Field(index=True, unique=True, nullable=False)
+    role_id: int = Field(foreign_key="roles.role_id", nullable=False)
 
+    role: "Role" = Relationship(back_populates="users")
     __tablename__ = "users"

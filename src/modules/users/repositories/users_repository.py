@@ -6,24 +6,40 @@ class UsersRepository:
         self.session = session
     
     async def get_all_users(self):
-        statement = select(User).order_by(User.user_id)
-        results = self.session.exec(statement)
-        return results.all()
+        try:
+            statement = select(User).order_by(User.user_id)
+            results = self.session.exec(statement)
+            return results.all()
+        except Exception as e:
+            self.session.rollback()
+            raise e
 
     async def get_user_by_id(self, user_id: int):
-        statement = select(User).where(User.user_id == user_id)
-        result = self.session.exec(statement)
-        return result.first()
+        try:
+            statement = select(User).where(User.user_id == user_id)
+            result = self.session.exec(statement)
+            return result.first()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def get_user_by_email(self, email: str):
-        statement = select(User).where(User.email == email)
-        result = self.session.exec(statement)
-        return result.first()
+        try:
+            statement = select(User).where(User.email == email)
+            result = self.session.exec(statement)
+            return result.first()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def get_user_by_phone(self, phone: str):
-        statement = select(User).where(User.phone == phone)
-        result = self.session.exec(statement)
-        return result.first()
+        try:
+            statement = select(User).where(User.phone == phone)
+            result = self.session.exec(statement)
+            return result.first()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def create_user(self, user: User):
         try:
@@ -55,6 +71,10 @@ class UsersRepository:
             raise e
 
     async def delete_user(self, user: User):
-        self.session.delete(user)
-        self.session.commit()
+        try:
+            self.session.delete(user)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
 

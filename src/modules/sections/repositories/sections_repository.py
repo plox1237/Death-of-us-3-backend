@@ -6,21 +6,33 @@ class SectionsRepository:
         self.session = session
     
     async def get_all_sections(self):
-        statement = select(Section).order_by(Section.section_id)
-        results = self.session.exec(statement)
-        return results.all()
+        try:
+            statement = select(Section).order_by(Section.section_id)
+            results = self.session.exec(statement)
+            return results.all()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def get_section_by_id(self, section_id: int):
-        statement = select(Section).where(Section.section_id == section_id)
-        result = self.session.exec(statement)
-        return result.first()
+        try:
+            statement = select(Section).where(Section.section_id == section_id)
+            result = self.session.exec(statement)
+            return result.first()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def get_section_by_name(self, name: str):
-        statement = select(Section).where(
-            func.lower(Section.name) == func.lower(name)
-        )
-        result = self.session.exec(statement)
-        return result.first()
+        try:
+            statement = select(Section).where(
+                func.lower(Section.name) == func.lower(name)
+            )
+            result = self.session.exec(statement)
+            return result.first()
+        except Exception as e:
+            self.session.rollback()
+            raise e
     
     async def create_section(self, section: Section):
         try:
@@ -48,6 +60,10 @@ class SectionsRepository:
             raise e
 
     async def delete_section(self, section: Section):
-        self.session.delete(section)
-        self.session.commit()
+        try:
+            self.session.delete(section)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
         
