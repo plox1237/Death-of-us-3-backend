@@ -7,8 +7,8 @@ from src.modules.auth.dependencies.auth_dependencies import get_current_user
 role_section_repository = RoleSectionRepository(Session(engine))
 
 def require_section(section_id: int):
-    def wrapper(current_user: dict = Depends(get_current_user)):
-        access = role_section_repository.get_role_section_by_role_id_and_section_id(
+    async def wrapper(current_user: dict = Depends(get_current_user)):
+        access = await role_section_repository.get_role_section_by_role_id_and_section_id(
             role_id=current_user["user_role"],
             section_id=section_id
         )
