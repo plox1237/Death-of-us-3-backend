@@ -9,20 +9,7 @@ class UsersRepository:
         try:
             statement = select(User).order_by(User.user_id)
             results = self.session.exec(statement).all()
-            return [
-            {
-                "user_id": u.user_id,
-                "name": u.name,
-                "last_name": u.last_name,
-                "email": u.email,
-                "phone": u.phone,
-                "role": {
-                    "role_id": u.role.role_id,
-                    "name": u.role.name
-                }
-            }
-            for u in results
-        ]
+            return results
         except Exception as e:
             self.session.rollback()
             raise e
@@ -31,17 +18,7 @@ class UsersRepository:
         try:
             statement = select(User).where(User.user_id == user_id)
             result = self.session.exec(statement).first()
-            return {
-                "user_id": result.user_id,
-                "name": result.name,
-                "last_name": result.last_name,
-                "email": result.email,
-                "phone": result.phone,
-                "role": {
-                    "role_id": result.role.role_id,
-                    "name": result.role.name
-                }
-            }
+            return result
         except Exception as e:
             self.session.rollback()
             raise e
@@ -50,17 +27,7 @@ class UsersRepository:
         try:
             statement = select(User).where(User.email == email)
             result = self.session.exec(statement).first()
-            return {
-                "user_id": result.user_id,
-                "name": result.name,
-                "last_name": result.last_name,
-                "email": result.email,
-                "phone": result.phone,
-                "role": {
-                    "role_id": result.role.role_id,
-                    "name": result.role.name
-                }
-            }
+            return result
         except Exception as e:
             self.session.rollback()
             raise e
@@ -69,17 +36,7 @@ class UsersRepository:
         try:
             statement = select(User).where(User.phone == phone)
             result = self.session.exec(statement).first()
-            return {
-                "user_id": result.user_id,
-                "name": result.name,
-                "last_name": result.last_name,
-                "email": result.email,
-                "phone": result.phone,
-                "role": {
-                    "role_id": result.role.role_id,
-                    "name": result.role.name
-                }
-            }
+            return result
         except Exception as e:
             self.session.rollback()
             raise e

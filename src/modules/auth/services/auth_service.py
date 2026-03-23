@@ -8,7 +8,6 @@ async def login_user_service(email: str, password: str):
     if not user:
         raise HTTPException(status_code=401, detail="INVALID CREDENTIALS")
     result = bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8'))
-    print("THE RESULT: ", result)
     if not result:
         print("INVALID CREDENTIALS")
         raise HTTPException(status_code=401, detail="INVALID CREDENTIALS")
