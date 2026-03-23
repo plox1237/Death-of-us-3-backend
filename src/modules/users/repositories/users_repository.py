@@ -65,6 +65,8 @@ class UsersRepository:
                 user_db.password = user.password
             if user.phone:
                 user_db.phone = user.phone
+            if user.role_id:
+                user_db.role_id = user.role_id
             self.session.commit()
         except Exception as e:
             self.session.rollback()
