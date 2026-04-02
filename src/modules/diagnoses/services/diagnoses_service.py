@@ -3,6 +3,7 @@ from sqlmodel import Session
 from src.config.database import engine
 from src.modules.diagnoses.model.diagnoses_model import Diagnoses
 from src.modules.diagnoses.repositories.diagnoses_repository import DiagnosesRepository
+from src.shared.utils.pdf_utils import generate_diagnoses_report
 
 diagnoses_repository = DiagnosesRepository(Session(engine))
 
@@ -27,6 +28,29 @@ class DiagnosesService:
         if not diagnoses:
             raise HTTPException(status_code=404, detail="DIAGNOSES NOT FOUND")
         return diagnoses
+
+    async def get_latest_diagnosis_pdf(self):
+        last_diagnoses = await self.repository.get_latest_diagnoses()
+        if not last_diagnoses:
+            raise HTTPException(status_code=404, detail="DIAGNOSES NOT FOUND")
+        formatted = [
+            {
+                "id": d.diagnosis_id,
+                "user_id": d.user_id,
+                "pregnancies": d.pregnancies,
+                "glucose": d.glucose,
+                "blood_pressure": d.blood_pressure,
+                "skin_thickness": d.skin_thickness,
+                "insulin": d.insulin,
+                "bmi": d.bmi,
+                "dpf": d.diabetes_pedigree_function,
+                "age": d.age,
+                "result": "Positivo" if d.result == 1 else "Negativo"
+            }
+            for d in last_diagnoses
+        ]
+        pdf_report = generate_diagnoses_report(formatted)
+        return pdf_report
     
     async def create_diagnosis(self, diagnosis: Diagnoses):
         await self.repository.create_diagnosis(diagnosis)

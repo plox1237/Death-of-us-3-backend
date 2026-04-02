@@ -1,4 +1,4 @@
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, StreamingResponse
 from fastapi.encoders import jsonable_encoder
 from src.modules.diagnoses.model.diagnoses_model import Diagnoses
 from src.modules.diagnoses.services.diagnoses_service import DiagnosesService
@@ -43,6 +43,20 @@ class DiagnosesController:
             }, status_code=200)
         except Exception as e:
             print("ERROR GETTING DIAGNOSES BY USER ID: ", e)
+            raise e
+    
+    async def get_latest_diagnoses_pdf(self):
+        try:
+            pdf_buffer = await self.service.get_latest_diagnosis_pdf()
+            return StreamingResponse(
+                pdf_buffer,
+                media_type="application/pdf",
+                headers={
+                    "Content-Disposition": "attachment; filename=latest_diagnoses_report.pdf"
+                }
+            )
+        except Exception as e:
+            print("ERROR GETTING LATEST DIAGNOSES PDF: ", e)
             raise e
     
     async def create_diagnosis(self, diagnosis: Diagnoses):

@@ -32,6 +32,15 @@ class DiagnosesRepository:
             self.session.rollback()
             raise e
     
+    async def get_latest_diagnoses(self):
+        try:
+            statement = select(Diagnoses).order_by(Diagnoses.diagnosis_id.desc()).limit(10)
+            result = self.session.exec(statement).all()
+            return result
+        except Exception as e:
+            self.session.rollback()
+            raise e
+    
     async def create_diagnosis(self, diagnosis: Diagnoses):
         try:
             self.session.add(diagnosis)

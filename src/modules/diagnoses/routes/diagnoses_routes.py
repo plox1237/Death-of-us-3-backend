@@ -18,6 +18,10 @@ async def get_diagnosis_by_id(diagnosis_id: int):
 async def get_all_diagnoses_by_user_id(user_id: int, _: dict = Depends(require_section(5))):
     return await diagnoses_controller.get_all_diagnoses_by_user_id(user_id)
 
+@diagnoses_router.get("/get_latest_pdf")
+async def get_latest_diagnoses_pdf(_: dict = Depends(require_section(5))):
+    return await diagnoses_controller.get_latest_diagnoses_pdf()
+
 @diagnoses_router.post("/create")
 async def create_diagnosis(diagnosis: Diagnoses, _: dict = Depends(require_section(5))):
     return await diagnoses_controller.create_diagnosis(diagnosis)
