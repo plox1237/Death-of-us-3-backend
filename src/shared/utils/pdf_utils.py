@@ -66,10 +66,28 @@ def generate_diagnoses_report(diagnoses: list):
     elements.append(Paragraph(intro, text_style))
     elements.append(Spacer(1, 10))
 
+    ranges_text = """
+    <b>Valores de referencia clínicos:</b><br/><br/>
+
+    • <b>Glucosa:</b> 70 - 100 mg/dL (en ayunas)<br/>
+    • <b>Presión arterial:</b> 80 - 120 mmHg (aprox.)<br/>
+    • <b>Espesor de piel:</b> 10 - 50 mm<br/>
+    • <b>Insulina:</b> 27 - 50 µU/mL<br/>
+    • <b>IMC (Índice de Masa Corporal):</b> 18.5 - 24.9<br/>
+    • <b>DPF (Función Pedigrí de Diabetes):</b> 0.0 - 2.5<br/>
+    • <b>Edad:</b> Variable según población<br/>
+    • <b>Embarazos:</b> Depende del historial clínico<br/>
+
+    Estos valores son referenciales y no sustituyen una evaluación médica profesional.
+    """
+
+    elements.append(Paragraph(ranges_text, text_style))
+    elements.append(Spacer(1, 12))
+
     # Encabezados de tabla
     data = [[
-        "ID", "Usuario", "Embarazos", "Glucosa", "Presión",
-        "Piel", "Insulina", "IMC", "DPF", "Edad", "Resultado"
+        "ID", "Usuario", "Nombre", "Embarazos", "Glucosa", "Presión",
+        "Piel", "Insulina", "IMC", "DPF", "Edad", "Resultado", "Probabilidad"
     ]]
 
     # Datos
@@ -77,6 +95,7 @@ def generate_diagnoses_report(diagnoses: list):
         data.append([
             d["id"],
             d["user_id"],
+            d["user_name"] + " " + d["user_last_name"],
             d["pregnancies"],
             d["glucose"],
             d["blood_pressure"],
@@ -85,7 +104,8 @@ def generate_diagnoses_report(diagnoses: list):
             round(d["bmi"], 2),
             round(d["dpf"], 3),
             d["age"],
-            d["result"]
+            d["result"],
+            d["probability"]
         ])
 
     table = Table(data, repeatRows=1)

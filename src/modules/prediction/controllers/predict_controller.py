@@ -6,8 +6,8 @@ async def predict_diabetes_controller(data_patient):
         pred, prob = await predict_diabetes(data_patient)
         return JSONResponse(status_code=200, content={
             "message": "PREDICTION SUCCESS",
-            "prediction": pred.tolist(), 
-            "probability": prob.tolist()
+            "prediction": pred, 
+            "probability": prob
             })
     except Exception as e:
         print("ERROR DURING PREDICTION: \n", e)

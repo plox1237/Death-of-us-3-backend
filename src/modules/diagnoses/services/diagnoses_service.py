@@ -37,6 +37,8 @@ class DiagnosesService:
             {
                 "id": d.diagnosis_id,
                 "user_id": d.user_id,
+                "user_name": d.user.name,
+                "user_last_name": d.user.last_name,
                 "pregnancies": d.pregnancies,
                 "glucose": d.glucose,
                 "blood_pressure": d.blood_pressure,
@@ -45,7 +47,8 @@ class DiagnosesService:
                 "bmi": d.bmi,
                 "dpf": d.diabetes_pedigree_function,
                 "age": d.age,
-                "result": "Positivo" if d.result == 1 else "Negativo"
+                "result": "Positivo" if d.result == 1 else "Negativo",
+                "probability": round(d.probability * 100, 2)
             }
             for d in last_diagnoses
         ]

@@ -16,6 +16,7 @@ class Diagnoses(SQLModel, table=True):
     diabetes_pedigree_function: float = Field(nullable=False)
     age: int = Field(nullable=False)
     result: int = Field(nullable=False)
+    probability: float = Field(nullable=False)
 
     user: "User" = Relationship(back_populates="diagnoses")
     __tablename__ = "diagnoses"

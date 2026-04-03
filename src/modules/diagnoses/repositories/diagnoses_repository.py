@@ -1,4 +1,5 @@
 from sqlmodel import select, Session
+from sqlalchemy.orm import selectinload
 from src.modules.diagnoses.model.diagnoses_model import Diagnoses
 
 class DiagnosesRepository:
@@ -34,7 +35,12 @@ class DiagnosesRepository:
     
     async def get_latest_diagnoses(self):
         try:
-            statement = select(Diagnoses).order_by(Diagnoses.diagnosis_id.desc()).limit(10)
+            statement = (
+                select(Diagnoses)
+                .options(selectinload(Diagnoses.user))
+                .order_by(Diagnoses.diagnosis_id.desc())
+                .limit(10)
+            )
             result = self.session.exec(statement).all()
             return result
         except Exception as e:
