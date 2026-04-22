@@ -31,4 +31,4 @@ Thumbs.db
 # --- Configuración local ---
 .env
 .env.local
-requirements.txt
+
